@@ -5,7 +5,7 @@ public class TasksInventory {
     private static TasksInventory INSTANCE = null;
     private final ConcurrentHashMap<Integer, Task> taskMap = new ConcurrentHashMap<>();
     private TasksInventory(){
-
+        // init nothing
     }
 
     public static synchronized TasksInventory getInstance() {
@@ -17,11 +17,15 @@ public class TasksInventory {
     }
 
     public Task get(int taskId) {
-        if (taskMap.contains(taskId)) {
+        if (taskMap.containsKey(taskId)) {
             return taskMap.get(taskId);
         }
 
         return null;
+    }
+
+    public boolean contains(int taskId) {
+        return taskMap.containsKey(taskId);
     }
 
     public void addTask(Task task) {
@@ -29,6 +33,7 @@ public class TasksInventory {
     }
 
     public void removeTask(int taskId) {
+        if (!taskMap.contains(taskId)) return;
         taskMap.remove(taskId);
     }
 }

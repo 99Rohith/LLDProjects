@@ -1,17 +1,37 @@
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
-public class TaskImpl extends Task {
+public class TaskImpl extends Task implements Comparable<Task> {
     public TaskImpl(int taskId,
                     String taskName,
                     String description,
                     LocalDateTime dueTime,
-                    int frequency) {
+                    int frequency,
+                    long repeatDays) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.description = description;
         this.dueTime = dueTime;
         this.frequency = frequency;
+        this.repeatDays = repeatDays;
+        this.numQueued = 1;
+        this.originalDueTime = this.dueTime;
+    }
+
+    @Override
+    public int compareTo(Task t) {
+        return this.dueTime.compareTo(t.getDueTime());
+    }
+
+    @Override
+    public LocalDateTime getOriginalDueTime() {
+        return this.originalDueTime;
+    }
+
+    @Override
+    public long getRepeatDays() {
+        return this.repeatDays;
     }
 
     @Override
@@ -25,8 +45,26 @@ public class TaskImpl extends Task {
     }
 
     @Override
-    public synchronized void updateDueTime(LocalDateTime dueTime) {
+    public synchronized void setNumQueued(int numQueued) {
+        this.numQueued = numQueued;
+    }
+
+    @Override
+    public int getNumQueued() {
+        return this.numQueued;
+    }
+
+    @Override
+    public synchronized void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    @Override
+    public synchronized void updateDueTime(LocalDateTime dueTime, boolean updateOriginal) {
         this.dueTime = dueTime;
+        if (updateOriginal) {
+            this.originalDueTime = dueTime;
+        }
     }
 
     @Override
@@ -50,8 +88,11 @@ public class TaskImpl extends Task {
                 "taskId=" + taskId +
                 ", taskName='" + taskName + '\'' +
                 ", description='" + description + '\'' +
-                ", dueTime=" + dueTime +
                 ", frequency=" + frequency +
+                ", repeatDays=" + repeatDays +
+                ", numQueued=" + numQueued +
+                ", completed=" + completed +
+                ", dueIn=" + LocalDateTime.now().until(dueTime, ChronoUnit.SECONDS) +
                 '}';
     }
 }
