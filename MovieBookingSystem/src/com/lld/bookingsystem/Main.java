@@ -71,9 +71,11 @@ public class Main {
             System.err.println("No shows available for movie: " + movie3.toString());
         }
 
+        BookingInfo bookingInfo11 = bookingSystem.bookTicket(user1, show5, seat4);
         BookingInfo bookingInfo1 = bookingSystem.bookTicket(user2, show5, seat4);
         BookingInfo bookingInfo2 = bookingSystem.bookTicket(user2, show5, seat4);
 
+        bookingSystem.cancelBooking(bookingInfo11);
         bookingSystem.cancelBooking(bookingInfo1);
         bookingSystem.cancelBooking(bookingInfo2);
     }
